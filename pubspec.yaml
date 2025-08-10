@@ -1,0 +1,92 @@
+name: cosmetic_ecommerce_app
+description: "Unified Cosmetic Ecommerce App for Admin and Customer interfaces"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # State Management & Navigation
+  get: ^4.6.6
+  
+  # HTTP & API
+  http: ^1.2.2
+  dio: ^5.7.0
+  
+  # Storage & Cache
+  shared_preferences: ^2.3.3
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  
+  # Authentication & Security
+  jwt_decoder: ^2.0.1
+  crypto: ^3.0.5
+  
+  # UI Components
+  cupertino_icons: ^1.0.8
+  solar_icons: ^0.0.5
+  flutter_svg: ^2.0.10+1
+  cached_network_image: ^3.4.1
+  shimmer: ^3.0.0
+  lottie: ^3.1.3
+  toastification: ^3.0.3
+  
+  # Forms & Validation
+  flutter_form_builder: ^10.1.0
+  
+  # Image Handling
+  image_picker: ^1.1.2
+  file_picker: ^10.2.0
+  
+  # Charts & Analytics (for admin dashboard)
+  fl_chart: ^1.0.0
+  
+  # Utils
+  intl: ^0.20.2
+  uuid: ^4.5.1
+  url_launcher: ^6.3.1
+  
+  # WebSocket & Real-time
+  socket_io_client: ^3.1.2
+  
+  # Responsive Design
+#  flutter_screenutil: ^5.9.3
+  
+  # Data Tables (for admin)
+  data_table_2: ^2.5.15
+  
+  # Toast & Dialogs
+  fluttertoast: ^8.2.8
+  awesome_dialog: ^3.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
+  flutter_lints: ^6.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+  
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/animations/

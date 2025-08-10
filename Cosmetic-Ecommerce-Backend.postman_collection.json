@@ -1,0 +1,4609 @@
+{
+  "info": {
+    "name": "Cosmetic Ecommerce Backend API",
+    "description": "Complete API collection for the cosmetic ecommerce backend built with NestJS, TypeScript, and MySQL. This collection includes all endpoints with comprehensive SEO support, streamlined user management, and advanced role-based access control with permission system.\\n\\n**🐳 Docker Setup (UPDATED):**\\n- ✅ **Application**: http://localhost:3000 (NestJS backend)\\n- ✅ **phpMyAdmin**: http://localhost:8081 (Database management UI)\\n- ✅ **RabbitMQ Management**: http://localhost:15672 (Message queue UI)\\n- ✅ **MySQL**: localhost:3307 (Database)\\n- ✅ **Redis**: localhost:6379 (Caching)\\n- ✅ **Nginx Proxy**: http://localhost:8080 (Reverse proxy)\\n\\n**🔧 Latest Updates Applied:**\\n- ✅ **Docker Integration**: Full containerization with all services\\n- ✅ **Database UI**: phpMyAdmin for easy database management\\n- ✅ **Fixed Body Parameters**: Corrected request body parameters for all endpoints\\n- ✅ **Permission-Based Authorization**: Enhanced security with role + permission requirements\\n- ✅ **Working Authentication**: User registration and login tested and verified\\n- ✅ Full SEO support for categories (metaTitle, metaDescription, metaKeywords, seoTitle, seoDescription, seoKeywords)\\n- ✅ Auto-generation of SEO fields when not provided\\n- ✅ Order creation validation (fixed quantity: string → int, address structure)\\n- ✅ Product inventory update (inventoryQuantity → quantity payload)\\n- ✅ Unified profile management (address & payment in single API)\\n- ✅ Enhanced category and product creation with full validation\\n- ✅ Comprehensive error handling and validation messages\\n- ✅ Complete ecommerce modules: Taxation, Coupons, Abandoned Cart, Banners, Promos, Ads, SMS Templates, OTP\\n\\n**📋 API Coverage:**\\nAuthentication, Unified Profile Management, SEO-Enhanced Categories, Products, Orders, Cart, Wishlist, Admin Dashboard, Health Check, Taxation, Coupons, Abandoned Cart, Banners, Promos, Ads, SMS Templates, OTP\\n\\n**🔐 Docker Login Credentials:**\\n\\n**Database Access (phpMyAdmin - http://localhost:8081):**\\n- **Username**: cosmetic_user\\n- **Password**: cosmetic_password\\n\\n**RabbitMQ Management (http://localhost:15672):**\\n- **Username**: cosmetic_user\\n- **Password**: cosmetic_password\\n\\n**🔐 Authentication Required:** Most admin endpoints require Bearer token with proper role and permissions. Use the register/login endpoints to get an access token.\\n\\n**📝 Test User Example (Already Created):**\\n- **Email**: test@example.com\\n- **Password**: testpassword123\\n- **First Name**: Test\\n- **Last Name**: User\\n- **Role**: customer\\n\\n**🚀 Quick Start:**\\n1. Import this collection into Postman\\n2. Use Register or Login endpoints to get an access token\\n3. The token will be automatically saved to {{accessToken}} variable\\n4. All authenticated requests will use this token automatically",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "4.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "productId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "orderId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "categoryId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "reviewId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "addressId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "paymentMethodId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "taxationId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "couponId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "abandonedCartId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "bannerId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "promoId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "smsTemplateId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "otpId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "superAdminToken",
+      "value": "",
+      "type": "string",
+      "description": "Super admin token with universal access to all endpoints"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string", 
+      "description": "Regular admin token - requires specific permissions for each module"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "User Registration",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"+1234567890\",\n  \"dateOfBirth\": \"1990-01-01\",\n  \"gender\": \"male\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Register a new user account"
+          }
+        },
+        {
+          "name": "User Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Login with email and password"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('accessToken', response.data.access_token);",
+                  "    pm.collectionVariables.set('userId', response.data.user.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@cosmetic.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Login as admin user with limited admin access to management endpoints (requires explicit role permissions)"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('accessToken', response.data.access_token);",
+                  "    pm.collectionVariables.set('userId', response.data.user.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Super Admin Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"avdheshgupta754@gmail.com\",\n  \"password\": \"Admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Login as super admin user with UNIVERSAL ACCESS to all endpoints. Super-admin bypasses all role and permission checks and can access any API endpoint in the system without restrictions."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('accessToken', response.data.access_token);",
+                  "    pm.collectionVariables.set('userId', response.data.user.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "profile"]
+            },
+            "description": "Get current user profile information"
+          }
+        },
+        {
+          "name": "Update User Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Smith\",\n  \"phone\": \"+1234567890\",\n  \"dateOfBirth\": \"1990-01-01\",\n  \"gender\": \"male\",\n  \"shippingAddress\": {\n    \"street\": \"123 Main St\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"postalCode\": \"10001\",\n    \"country\": \"US\"\n  },\n  \"billingAddress\": {\n    \"street\": \"456 Oak Ave\",\n    \"city\": \"Los Angeles\",\n    \"state\": \"CA\",\n    \"postalCode\": \"90210\",\n    \"country\": \"US\"\n  },\n  \"paymentDetails\": {\n    \"defaultPaymentMethod\": \"credit_card\",\n    \"billingSameAsShipping\": false\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "profile"]
+            },
+            "description": "Update user profile information including address and payment details:\\n\\n**Basic Info:** firstName, lastName, phone, dateOfBirth, gender, avatarUrl\\n\\n**Shipping Address:** street, city, state, postalCode, country\\n\\n**Billing Address:** street, city, state, postalCode, country\\n\\n**Payment Details:** defaultPaymentMethod, billingSameAsShipping\\n\\nAll fields are optional. This replaces separate address and payment method endpoints for simplified user management."
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"password123\",\n  \"newPassword\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/change-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "change-password"]
+            },
+            "description": "Change user password"
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/forgot-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "forgot-password"]
+            },
+            "description": "Request password reset email"
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"reset-token-here\",\n  \"newPassword\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/reset-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "reset-password"]
+            },
+            "description": "Reset password with token"
+          }
+        },
+        {
+          "name": "Verify Email",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify-email/verification-token-here",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "verify-email", "verification-token-here"]
+            },
+            "description": "Verify email with verification token"
+          }
+        },
+        {
+          "name": "Resend Verification Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/resend-verification",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "resend-verification"]
+            },
+            "description": "Resend email verification"
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh-token",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "refresh-token"]
+            },
+            "description": "Refresh access token"
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            },
+            "description": "Get current user information"
+          }
+        }
+      ],
+      "description": "Authentication endpoints for user registration, login, and unified profile management with address and payment details. ✅ UPDATED: Streamlined API with comprehensive profile management in single endpoint.",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript", 
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories?includeInactive=false&flat=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"],
+              "query": [
+                {
+                  "key": "includeInactive",
+                  "value": "false"
+                },
+                {
+                  "key": "flat", 
+                  "value": "false"
+                }
+              ]
+            },
+            "description": "Get all categories with optional filters. Supports query parameters:\\n- includeInactive: Include inactive categories (default: false)\\n- flat: Return flat list instead of hierarchical structure (default: false)"
+          }
+        },
+        {
+          "name": "Create User Address",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"both\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"address1\": \"123 Main St\",\n  \"city\": \"Anytown\",\n  \"state\": \"CA\",\n  \"postalCode\": \"12345\",\n  \"country\": \"USA\",\n  \"phone\": \"+1234567890\",\n  \"isDefault\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/addresses",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "addresses"]
+            },
+            "description": "Create a new user address. Address type can be 'billing', 'shipping', or 'both'."
+          }
+        },
+        {
+          "name": "Update User Address",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Doe\",\n  \"address1\": \"456 Oak Ave\",\n  \"city\": \"Newtown\",\n  \"state\": \"NY\",\n  \"postalCode\": \"54321\",\n  \"country\": \"USA\",\n  \"phone\": \"+1987654321\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/addresses/{{addressId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "addresses", "{{addressId}}"]
+            },
+            "description": "Update an existing user address"
+          }
+        },
+        {
+          "name": "Delete User Address",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization", 
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/addresses/{{addressId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "addresses", "{{addressId}}"]
+            },
+            "description": "Delete a user address"
+          }
+        },
+        {
+          "name": "Set Default Address",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/addresses/{{addressId}}/default",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "addresses", "{{addressId}}", "default"]
+            },
+            "description": "Set an address as the default address"
+          }
+        },
+        {
+          "name": "Get User Payment Methods",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/payment-methods",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "payment-methods"]
+            },
+            "description": "Get all user payment methods"
+          }
+        },
+        {
+          "name": "Create Payment Method",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"credit_card\",\n  \"name\": \"My Visa Card\",\n  \"cardType\": \"visa\",\n  \"last4\": \"1234\",\n  \"expiryMonth\": \"12\",\n  \"expiryYear\": \"2025\",\n  \"cardholderName\": \"John Doe\",\n  \"isDefault\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/payment-methods",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "payment-methods"]
+            },
+            "description": "Create a new payment method. Supported types: 'credit_card', 'debit_card', 'paypal', 'bank_transfer'. For cards, include last4, expiry, and card type."
+          }
+        },
+        {
+          "name": "Update Payment Method",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"My Updated Card\",\n  \"expiryMonth\": \"06\",\n  \"expiryYear\": \"2026\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/payment-methods/{{paymentMethodId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "payment-methods", "{{paymentMethodId}}"]
+            },
+            "description": "Update an existing payment method"
+          }
+        },
+        {
+          "name": "Delete Payment Method",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/payment-methods/{{paymentMethodId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "payment-methods", "{{paymentMethodId}}"]
+            },
+            "description": "Delete a payment method"
+          }
+        },
+        {
+          "name": "Set Default Payment Method",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/payment-methods/{{paymentMethodId}}/default",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "payment-methods", "{{paymentMethodId}}", "default"]
+            },
+            "description": "Set a payment method as the default payment method"
+          }
+        }
+      ],
+      "description": "Authentication endpoints for user registration, login, profile management, address management, payment methods, and password operations. ✅ UPDATED: Added complete address and payment method management with proper validation."
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Vitamin C Serum\",\n  \"description\": \"A powerful vitamin C serum for brightening and anti-aging\",\n  \"slug\": \"vitamin-c-serum\",\n  \"sku\": \"VCS-001\",\n  \"price\": 49.99,\n  \"comparePrice\": 59.99,\n  \"costPrice\": 25.00,\n  \"categoryId\": \"{{categoryId}}\",\n  \"inventoryQuantity\": 100,\n  \"lowStockThreshold\": 10,\n  \"weight\": 30,\n  \"dimensions\": \"3x3x8 cm\",\n  \"isActive\": true,\n  \"isFeatured\": true,\n  \"tags\": [\"vitamin-c\", \"serum\", \"skincare\"],\n  \"metaTitle\": \"Vitamin C Serum - Premium Skincare\",\n  \"metaDescription\": \"Transform your skin with our vitamin C serum\",\n  \"metaKeywords\": \"vitamin c, serum, skincare, anti-aging\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"]
+            },
+            "description": "Create a new product (Admin only)"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('productId', response.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products?page=1&limit=10&sortBy=newest&categoryId={{categoryId}}&minPrice=10&maxPrice=100&isActive=true&isFeatured=true&search=vitamin",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "newest"
+                },
+                {
+                  "key": "categoryId",
+                  "value": "{{categoryId}}"
+                },
+                {
+                  "key": "minPrice",
+                  "value": "10"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "100"
+                },
+                {
+                  "key": "isActive",
+                  "value": "true"
+                },
+                {
+                  "key": "isFeatured",
+                  "value": "true"
+                },
+                {
+                  "key": "search",
+                  "value": "vitamin"
+                }
+              ]
+            },
+            "description": "Get all products with pagination and filtering"
+          }
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"]
+            },
+            "description": "Get product details by ID"
+          }
+        },
+        {
+          "name": "Get Product by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/slug/vitamin-c-serum",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "slug", "vitamin-c-serum"]
+            },
+            "description": "Get product details by slug"
+          }
+        },
+        {
+          "name": "Get Featured Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/featured?limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "featured"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get featured products"
+          }
+        },
+        {
+          "name": "Get Related Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}/related?limit=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}", "related"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            },
+            "description": "Get related products for a specific product"
+          }
+        },
+        {
+          "name": "Get Low Stock Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/low-stock?limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "low-stock"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get products with low stock (Admin only)"
+          }
+        },
+        {
+          "name": "Get Out of Stock Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/out-of-stock?limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "out-of-stock"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get out of stock products (Admin only)"
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Vitamin C Serum - Updated\",\n  \"description\": \"Updated description for vitamin C serum\",\n  \"price\": 54.99,\n  \"comparePrice\": 64.99,\n  \"inventoryQuantity\": 100,\n  \"lowStockThreshold\": 15,\n  \"isFeatured\": false,\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"]
+            },
+            "description": "Update product details (Admin only)"
+          }
+        },
+        {
+          "name": "Update Product Inventory",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 150,\n  \"lowStockThreshold\": 20\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}/inventory",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}", "inventory"]
+            },
+            "description": "Update product inventory with corrected payload structure:\\n- quantity (required): New inventory quantity (integer)\\n- lowStockThreshold (optional): Threshold for low stock alerts (integer)\\n\\nNote: Product must have trackInventory enabled. (Admin only)"
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"]
+            },
+            "description": "Delete product (Admin only)"
+          }
+        }
+      ],
+      "description": "Product management endpoints for creating, reading, updating, and deleting products"
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Skincare\",\n  \"description\": \"Premium skincare products for healthy glowing skin\",\n  \"slug\": \"skincare\",\n  \"isActive\": true,\n  \"isFeatured\": false,\n  \"sortOrder\": 1,\n  \"icon\": \"fas fa-spa\",\n  \"seoTitle\": \"Skincare - Premium Beauty Products\",\n  \"seoDescription\": \"Shop the best skincare products for healthy, glowing skin\",\n  \"seoKeywords\": \"skincare products, beauty care, cosmetics\",\n  \"metaTitle\": \"Skincare Products - Premium Beauty\",\n  \"metaDescription\": \"Discover our premium skincare collection\",\n  \"metaKeywords\": \"skincare, beauty, cosmetics\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"]
+            },
+            "description": "Create a new category with comprehensive SEO support (Admin only)\\n\\n**Basic Fields:**\\n- name: Category name (required)\\n- description: Category description\\n- slug: URL-friendly slug (auto-generated if not provided)\\n- isActive: Category active status\\n- isFeatured: Featured category status\\n- sortOrder: Display order\\n- icon: Category icon class\\n- parentId: Parent category ID for hierarchy\\n\\n**SEO Fields:**\\n- seoTitle: SEO page title\\n- seoDescription: SEO meta description\\n- seoKeywords: SEO keywords\\n- metaTitle: Alternative meta title\\n- metaDescription: Alternative meta description\\n- metaKeywords: Alternative meta keywords\\n\\n**Auto-generation:** If SEO fields are not provided, they will be auto-generated based on the category name and description."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('categoryId', response.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories?page=1&limit=10&isActive=true&sortBy=sortOrder",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "isActive",
+                  "value": "true"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "sortOrder"
+                }
+              ]
+            },
+            "description": "Get all categories with pagination and filtering"
+          }
+        },
+        {
+          "name": "Get Category Tree",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/tree",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "tree"]
+            },
+            "description": "Get category tree structure"
+          }
+        },
+        {
+          "name": "Get Featured Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/featured?limit=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "featured"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            },
+            "description": "Get featured categories"
+          }
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{categoryId}}"]
+            },
+            "description": "Get category details by ID"
+          }
+        },
+        {
+          "name": "Get Category by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/slug/skincare",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "slug", "skincare"]
+            },
+            "description": "Get category details by slug"
+          }
+        },
+        {
+          "name": "Get Category Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}/products?page=1&limit=10&sortBy=newest",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{categoryId}}", "products"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "newest"
+                }
+              ]
+            },
+            "description": "Get products in a specific category"
+          }
+        },
+        {
+          "name": "Get Child Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}/children",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{categoryId}}", "children"]
+            },
+            "description": "Get child categories of a parent category"
+          }
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Skincare - Updated\",\n  \"description\": \"Updated description for skincare category\",\n  \"isActive\": true,\n  \"isFeatured\": true,\n  \"sortOrder\": 2,\n  \"seoTitle\": \"Premium Skincare Products - Updated\",\n  \"seoDescription\": \"Updated premium skincare collection for all skin types\",\n  \"metaTitle\": \"Skincare Products - Premium Beauty Updated\",\n  \"metaDescription\": \"Discover our updated premium skincare collection\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{categoryId}}"]
+            },
+            "description": "Update category details with SEO support (Admin only)\\n\\nAll fields are optional. Only provided fields will be updated. SEO fields can be updated independently of basic category information."
+          }
+        },
+        {
+          "name": "Move Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"parentId\": \"new-parent-category-id\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}/move",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{categoryId}}", "move"]
+            },
+            "description": "Move category to different parent (Admin only)"
+          }
+        },
+        {
+          "name": "Reorder Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sortOrder\": 5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}/reorder",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{categoryId}}", "reorder"]
+            },
+            "description": "Reorder category position (Admin only)"
+          }
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{categoryId}}"]
+            },
+            "description": "Delete category (Admin only)"
+          }
+        }
+      ],
+      "description": "Category management endpoints for organizing products into categories"
+    },
+    {
+      "name": "Reviews",
+      "item": [
+        {
+          "name": "Create Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"rating\": 5,\n  \"title\": \"Amazing product!\",\n  \"content\": \"This product exceeded my expectations. The quality is outstanding and I would definitely recommend it to others.\",\n  \"images\": [\"https://example.com/review-image1.jpg\", \"https://example.com/review-image2.jpg\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reviews",
+              "host": ["{{baseUrl}}"],
+              "path": ["reviews"]
+            },
+            "description": "Create a new product review (Authenticated users only)"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('reviewId', response.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reviews?page=1&limit=10&sortBy=newest&minRating=4&maxRating=5&isVerified=true&isApproved=true&hasContent=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["reviews"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "newest"
+                },
+                {
+                  "key": "minRating",
+                  "value": "4"
+                },
+                {
+                  "key": "maxRating",
+                  "value": "5"
+                },
+                {
+                  "key": "isVerified",
+                  "value": "true"
+                },
+                {
+                  "key": "isApproved",
+                  "value": "true"
+                },
+                {
+                  "key": "hasContent",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Get all reviews with pagination and filtering"
+          }
+        },
+        {
+          "name": "Get Product Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reviews/product/{{productId}}?page=1&limit=10&sortBy=most_helpful",
+              "host": ["{{baseUrl}}"],
+              "path": ["reviews", "product", "{{productId}}"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "most_helpful"
+                }
+              ]
+            },
+            "description": "Get reviews for a specific product"
+          }
+        },
+        {
+          "name": "Get Product Review Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reviews/product/{{productId}}/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["reviews", "product", "{{productId}}", "stats"]
+            },
+            "description": "Get review statistics for a product"
+          }
+        },
+        {
+          "name": "Get User Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reviews/user/{{userId}}?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["reviews", "user", "{{userId}}"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get reviews by a specific user"
+          }
+        },
+        {
+          "name": "Get My Reviews",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reviews/my-reviews?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["reviews", "my-reviews"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get current user's reviews"
+          }
+        },
+        {
+          "name": "Get Review by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reviews/{{reviewId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["reviews", "{{reviewId}}"]
+            },
+            "description": "Get review details by ID"
+          }
+        },
+        {
+          "name": "Update Review",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 4,\n  \"title\": \"Good product - Updated\",\n  \"content\": \"Updated review content. Still a good product but not as amazing as I initially thought.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reviews/{{reviewId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["reviews", "{{reviewId}}"]
+            },
+            "description": "Update review (Owner only)"
+          }
+        },
+        {
+          "name": "Mark Review as Helpful",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reviews/{{reviewId}}/helpful",
+              "host": ["{{baseUrl}}"],
+              "path": ["reviews", "{{reviewId}}", "helpful"]
+            },
+            "description": "Mark review as helpful (Authenticated users only)"
+          }
+        },
+        {
+          "name": "Mark Review as Unhelpful",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reviews/{{reviewId}}/unhelpful",
+              "host": ["{{baseUrl}}"],
+              "path": ["reviews", "{{reviewId}}", "unhelpful"]
+            },
+            "description": "Mark review as unhelpful (Authenticated users only)"
+          }
+        },
+        {
+          "name": "Approve Review",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reviews/{{reviewId}}/approve",
+              "host": ["{{baseUrl}}"],
+              "path": ["reviews", "{{reviewId}}", "approve"]
+            },
+            "description": "Approve review (Admin only)"
+          }
+        },
+        {
+          "name": "Disapprove Review",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reviews/{{reviewId}}/disapprove",
+              "host": ["{{baseUrl}}"],
+              "path": ["reviews", "{{reviewId}}", "disapprove"]
+            },
+            "description": "Disapprove review (Admin only)"
+          }
+        },
+        {
+          "name": "Delete Review",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reviews/{{reviewId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["reviews", "{{reviewId}}"]
+            },
+            "description": "Delete review (Owner or Admin only)"
+          }
+        }
+      ],
+      "description": "Review management endpoints for product reviews and ratings"
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"quantity\": 2\n    },\n    {\n      \"productId\": \"another-product-id\",\n      \"productVariantId\": \"variant-id-123\",\n      \"quantity\": 1\n    }\n  ],\n  \"billingAddress\": {\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"address1\": \"123 Main St\",\n    \"address2\": \"Apt 4B\",\n    \"city\": \"Anytown\",\n    \"state\": \"CA\",\n    \"postalCode\": \"12345\",\n    \"country\": \"USA\",\n    \"phone\": \"+1234567890\"\n  },\n  \"shippingAddress\": {\n    \"firstName\": \"Jane\",\n    \"lastName\": \"Smith\",\n    \"company\": \"Acme Corp\",\n    \"address1\": \"456 Oak Ave\",\n    \"city\": \"Somewhere\",\n    \"state\": \"NY\",\n    \"postalCode\": \"54321\",\n    \"country\": \"USA\",\n    \"phone\": \"+1987654321\"\n  },\n  \"paymentMethod\": \"credit_card\",\n  \"customerNotes\": \"Please handle with care and call before delivery\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders"]
+            },
+            "description": "Create a new order. Items can include productVariantId for specific variants. Payment methods: 'credit_card', 'debit_card', 'paypal', 'bank_transfer'. Address fields: firstName, lastName, address1, city, state, postalCode, country, phone."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('orderId', response.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get User Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders?page=1&limit=10&status=delivered&sortBy=newest",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "delivered"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "newest"
+                }
+              ]
+            },
+            "description": "Get user's orders with pagination and filtering"
+          }
+        },
+        {
+          "name": "Get Order Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "stats"]
+            },
+            "description": "Get user's order statistics"
+          }
+        },
+        {
+          "name": "Get Order by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{orderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "{{orderId}}"]
+            },
+            "description": "Get order details by ID"
+          }
+        },
+        {
+          "name": "Get Order by Number",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders/number/ORD-12345",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "number", "ORD-12345"]
+            },
+            "description": "Get order details by order number"
+          }
+        },
+        {
+          "name": "Update Order",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"processing\",\n  \"paymentStatus\": \"paid\",\n  \"trackingNumber\": \"TRK123456789\",\n  \"notes\": \"Order is being processed\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{orderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "{{orderId}}"]
+            },
+            "description": "Update order details (Admin only)"
+          }
+        },
+        {
+          "name": "Cancel Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Changed my mind\",\n  \"refundRequested\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{orderId}}/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "{{orderId}}", "cancel"]
+            },
+            "description": "Cancel order (Owner or Admin only)"
+          }
+        }
+      ],
+      "description": "Order management endpoints for creating and managing orders"
+    },
+    {
+      "name": "Cart",
+      "item": [
+        {
+          "name": "Add Item to Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cart/add",
+              "host": ["{{baseUrl}}"],
+              "path": ["cart", "add"]
+            },
+            "description": "Add item to cart (Authenticated users only)"
+          }
+        },
+        {
+          "name": "Get Cart",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cart",
+              "host": ["{{baseUrl}}"],
+              "path": ["cart"]
+            },
+            "description": "Get user's cart with all items"
+          }
+        },
+        {
+          "name": "Get Cart Count",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cart/count",
+              "host": ["{{baseUrl}}"],
+              "path": ["cart", "count"]
+            },
+            "description": "Get total count of items in cart"
+          }
+        },
+        {
+          "name": "Update Cart Item",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 3\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cart/items/cart-item-id",
+              "host": ["{{baseUrl}}"],
+              "path": ["cart", "items", "cart-item-id"]
+            },
+            "description": "Update cart item quantity"
+          }
+        },
+        {
+          "name": "Remove Cart Item",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cart/items/cart-item-id",
+              "host": ["{{baseUrl}}"],
+              "path": ["cart", "items", "cart-item-id"]
+            },
+            "description": "Remove item from cart"
+          }
+        },
+        {
+          "name": "Clear Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cart/clear",
+              "host": ["{{baseUrl}}"],
+              "path": ["cart", "clear"]
+            },
+            "description": "Clear all items from cart"
+          }
+        },
+        {
+          "name": "Validate Cart",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cart/validate",
+              "host": ["{{baseUrl}}"],
+              "path": ["cart", "validate"]
+            },
+            "description": "Validate cart items for checkout"
+          }
+        }
+      ],
+      "description": "Shopping cart endpoints for managing cart items"
+    },
+    {
+      "name": "Wishlist",
+      "item": [
+        {
+          "name": "Add Item to Wishlist",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"{{productId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/wishlist/add",
+              "host": ["{{baseUrl}}"],
+              "path": ["wishlist", "add"]
+            },
+            "description": "Add item to wishlist (Authenticated users only)"
+          }
+        },
+        {
+          "name": "Get Wishlist",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/wishlist?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["wishlist"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get user's wishlist with pagination"
+          }
+        },
+        {
+          "name": "Get Wishlist Count",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/wishlist/count",
+              "host": ["{{baseUrl}}"],
+              "path": ["wishlist", "count"]
+            },
+            "description": "Get total count of items in wishlist"
+          }
+        },
+        {
+          "name": "Check Product in Wishlist",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/wishlist/check/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["wishlist", "check", "{{productId}}"]
+            },
+            "description": "Check if product is in wishlist"
+          }
+        },
+        {
+          "name": "Update Wishlist Item",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Want to buy this for my birthday\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/wishlist/items/wishlist-item-id",
+              "host": ["{{baseUrl}}"],
+              "path": ["wishlist", "items", "wishlist-item-id"]
+            },
+            "description": "Update wishlist item"
+          }
+        },
+        {
+          "name": "Remove Wishlist Item",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/wishlist/items/wishlist-item-id",
+              "host": ["{{baseUrl}}"],
+              "path": ["wishlist", "items", "wishlist-item-id"]
+            },
+            "description": "Remove item from wishlist"
+          }
+        },
+        {
+          "name": "Clear Wishlist",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/wishlist/clear",
+              "host": ["{{baseUrl}}"],
+              "path": ["wishlist", "clear"]
+            },
+            "description": "Clear all items from wishlist"
+          }
+        },
+        {
+          "name": "Move Wishlist Item to Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/wishlist/items/wishlist-item-id/move-to-cart",
+              "host": ["{{baseUrl}}"],
+              "path": ["wishlist", "items", "wishlist-item-id", "move-to-cart"]
+            },
+            "description": "Move wishlist item to cart"
+          }
+        }
+      ],
+      "description": "Wishlist endpoints for managing favorite products"
+    },
+    {
+      "name": "Admin Dashboard",
+      "item": [
+        {
+          "name": "Dashboard Overview",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/dashboard/overview",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "dashboard", "overview"]
+            },
+            "description": "Get dashboard overview statistics (Admin only)"
+          }
+        },
+        {
+          "name": "Sales Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/dashboard/sales-stats?period=30days",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "dashboard", "sales-stats"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "30days"
+                }
+              ]
+            },
+            "description": "Get sales statistics (Admin only)"
+          }
+        },
+        {
+          "name": "User Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/dashboard/user-stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "dashboard", "user-stats"]
+            },
+            "description": "Get user statistics (Admin only)"
+          }
+        },
+        {
+          "name": "Product Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/dashboard/product-stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "dashboard", "product-stats"]
+            },
+            "description": "Get product statistics (Admin only)"
+          }
+        },
+        {
+          "name": "Recent Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/dashboard/recent-orders?limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "dashboard", "recent-orders"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get recent orders (Admin only)"
+          }
+        },
+        {
+          "name": "Recent Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/dashboard/recent-users?limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "dashboard", "recent-users"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get recent users (Admin only)"
+          }
+        },
+        {
+          "name": "Recent Reviews",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/dashboard/recent-reviews?limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "dashboard", "recent-reviews"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get recent reviews (Admin only)"
+          }
+        },
+        {
+          "name": "Top Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/dashboard/top-products?limit=10&sortBy=sales",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "dashboard", "top-products"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "sales"
+                }
+              ]
+            },
+            "description": "Get top selling products (Admin only)"
+          }
+        },
+        {
+          "name": "Revenue Chart",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/dashboard/revenue-chart?period=30days&groupBy=day",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "dashboard", "revenue-chart"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "30days"
+                },
+                {
+                  "key": "groupBy",
+                  "value": "day"
+                }
+              ]
+            },
+            "description": "Get revenue chart data (Admin only)"
+          }
+        },
+        {
+          "name": "Order Status Distribution",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/dashboard/order-status-distribution",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "dashboard", "order-status-distribution"]
+            },
+            "description": "Get order status distribution (Admin only)"
+          }
+        },
+        {
+          "name": "Inventory Alerts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/dashboard/inventory-alerts",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "dashboard", "inventory-alerts"]
+            },
+            "description": "Get inventory alerts (Admin only)"
+          }
+        },
+        {
+          "name": "Customer Insights",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/dashboard/customer-insights",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "dashboard", "customer-insights"]
+            },
+            "description": "Get customer insights (Admin only)"
+          }
+        }
+      ],
+      "description": "Admin dashboard endpoints for analytics and management insights"
+    },
+    {
+      "name": "Admin User Management",
+      "item": [
+        {
+          "name": "Create Admin User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Admin\",\n  \"lastName\": \"User\",\n  \"email\": \"admin.user@cosmetic.com\",\n  \"password\": \"AdminPass123!\",\n  \"phone\": \"+1234567890\",\n  \"dateOfBirth\": \"1990-01-01\",\n  \"gender\": \"male\",\n  \"avatarUrl\": \"https://example.com/avatar.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "create"]
+            },
+            "description": "Create a new admin user (Super Admin only). Required fields: email, password, firstName, lastName. Optional: phone, dateOfBirth, gender, avatarUrl"
+          }
+        },
+        {
+          "name": "Get All Admin Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/users?page=1&limit=10&isActive=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "isActive",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Get all admin users (Super Admin only)"
+          }
+        },
+        {
+          "name": "Get Admin User by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", "{{userId}}"]
+            },
+            "description": "Get admin user by ID (Super Admin only)"
+          }
+        },
+        {
+          "name": "Update Admin User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Updated Admin\",\n  \"lastName\": \"User\",\n  \"email\": \"updated.admin@cosmetic.com\",\n  \"phone\": \"+1234567890\",\n  \"dateOfBirth\": \"1990-01-01\",\n  \"gender\": \"female\",\n  \"avatarUrl\": \"https://example.com/new-avatar.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", "{{userId}}"]
+            },
+            "description": "Update admin user (Super Admin only)"
+          }
+        },
+        {
+          "name": "Activate Admin User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/{{userId}}/activate",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", "{{userId}}", "activate"]
+            },
+            "description": "Activate admin user (Super Admin only)"
+          }
+        },
+        {
+          "name": "Deactivate Admin User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/{{userId}}/deactivate",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", "{{userId}}", "deactivate"]
+            },
+            "description": "Deactivate admin user (Super Admin only)"
+          }
+        },
+        {
+          "name": "Delete Admin User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", "{{userId}}"]
+            },
+            "description": "Delete admin user (Super Admin only)"
+          }
+        }
+      ],
+      "description": "Admin user management endpoints for creating and managing admin users"
+    },
+    {
+      "name": "Permissions & Roles",
+      "item": [
+        {
+          "name": "Create Permission",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"products:delete\",\n  \"description\": \"Permission to delete products\",\n  \"resource\": \"products\",\n  \"action\": \"delete\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["permissions"]
+            },
+            "description": "Create a new permission (Super Admin only)"
+          }
+        },
+        {
+          "name": "Get All Permissions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/permissions?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["permissions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Get all permissions (Admin+)"
+          }
+        },
+        {
+          "name": "Get Permissions by Resource",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/permissions/by-resource/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["permissions", "by-resource", "products"]
+            },
+            "description": "Get permissions by resource (Admin+)"
+          }
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"product_manager\",\n  \"description\": \"Role for managing products\",\n  \"permissions\": [\"products:read\", \"products:write\", \"products:delete\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/roles",
+              "host": ["{{baseUrl}}"],
+              "path": ["roles"]
+            },
+            "description": "Create a new role (Super Admin only)"
+          }
+        },
+        {
+          "name": "Get All Roles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/roles?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["roles"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all roles (Admin+)"
+          }
+        },
+        {
+          "name": "Assign Permissions to Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"permissions\": [\"products:read\", \"products:write\", \"categories:read\", \"categories:write\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/roles/role-id/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["roles", "role-id", "permissions"]
+            },
+            "description": "Assign permissions to role (Super Admin only)"
+          }
+        }
+      ],
+      "description": "Permission and role management endpoints for access control"
+    },
+    {
+      "name": "File Upload",
+      "item": [
+        {
+          "name": "Upload Single Image",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/upload/image",
+              "host": ["{{baseUrl}}"],
+              "path": ["upload", "image"]
+            },
+            "description": "Upload single image (Admin only)"
+          }
+        },
+        {
+          "name": "Upload Multiple Images",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/upload/images",
+              "host": ["{{baseUrl}}"],
+              "path": ["upload", "images"]
+            },
+            "description": "Upload multiple images (max 10, Admin only)"
+          }
+        },
+        {
+          "name": "Upload Product Image",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "productId",
+                  "value": "{{productId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "altText",
+                  "value": "Product image",
+                  "type": "text"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "isPrimary",
+                  "value": "true",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/upload/product-image",
+              "host": ["{{baseUrl}}"],
+              "path": ["upload", "product-image"]
+            },
+            "description": "Upload product image (Admin only)"
+          }
+        },
+        {
+          "name": "Upload Category Image",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "categoryId",
+                  "value": "{{categoryId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "altText",
+                  "value": "Category image",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/upload/category-image",
+              "host": ["{{baseUrl}}"],
+              "path": ["upload", "category-image"]
+            },
+            "description": "Upload category image (Admin only)"
+          }
+        }
+      ],
+      "description": "File upload endpoints for images and media"
+    },
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Basic health check endpoint"
+          }
+        },
+        {
+          "name": "Readiness Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health/ready",
+              "host": ["{{baseUrl}}"],
+              "path": ["health", "ready"]
+            },
+            "description": "Readiness check endpoint"
+          }
+        },
+        {
+          "name": "Liveness Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health/live",
+              "host": ["{{baseUrl}}"],
+              "path": ["health", "live"]
+            },
+            "description": "Liveness check endpoint"
+          }
+        }
+      ],
+      "description": "Health monitoring endpoints for application status"
+    },
+    {
+      "name": "Taxation",
+      "item": [
+        {
+          "name": "Create Tax Rule",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"VAT Rule USA\",\n  \"rate\": 20.0,\n  \"type\": \"percentage\",\n  \"country\": \"US\",\n  \"state\": \"CA\",\n  \"city\": \"Los Angeles\",\n  \"minAmount\": 0,\n  \"maxAmount\": 10000,\n  \"isActive\": true,\n  \"description\": \"VAT rule for California, USA\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/taxation",
+              "host": ["{{baseUrl}}"],
+              "path": ["taxation"]
+            },
+            "description": "Create a new tax rule\\n\\n**🔐 Authorization Required:**\\n- **Super Admin**: Universal access\\n- **Regular Admin**: Requires 'admin' role + 'manage:taxation' permission\\n\\n**Note:** If you get 403 'Insufficient role permissions', ensure your admin user has been granted the 'manage:taxation' permission by a super admin."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Tax Rules",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/taxation",
+              "host": ["{{baseUrl}}"],
+              "path": ["taxation"]
+            },
+            "description": "Get all tax rules"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Active Tax Rules",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/taxation/active?country=US&state=CA",
+              "host": ["{{baseUrl}}"],
+              "path": ["taxation", "active"],
+              "query": [
+                {
+                  "key": "country",
+                  "value": "US"
+                },
+                {
+                  "key": "state",
+                  "value": "CA"
+                }
+              ]
+            },
+            "description": "Get active tax rules for specific country/state"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Tax Rule by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/taxation/{{taxationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["taxation", "{{taxationId}}"]
+            },
+            "description": "Get tax rule by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Tax Rule",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated VAT Rule\",\n  \"value\": 22.0,\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/taxation/{{taxationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["taxation", "{{taxationId}}"]
+            },
+            "description": "Update tax rule by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Tax Rule",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/taxation/{{taxationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["taxation", "{{taxationId}}"]
+            },
+            "description": "Delete tax rule by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Calculate Tax",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"categoryId\": \"{{categoryId}}\",\n      \"price\": 100.00,\n      \"quantity\": 2\n    }\n  ],\n  \"country\": \"US\",\n  \"state\": \"CA\",\n  \"customerType\": \"individual\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/taxation/calculate",
+              "host": ["{{baseUrl}}"],
+              "path": ["taxation", "calculate"]
+            },
+            "description": "Calculate tax for cart items"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tax management and calculation endpoints"
+    },
+    {
+      "name": "Coupons",
+      "item": [
+        {
+          "name": "Create Coupon",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"SAVE20\",\n  \"name\": \"Save 20% on all items\",\n  \"description\": \"Get 20% off your order\",\n  \"type\": \"percentage\",\n  \"value\": 20,\n  \"minOrderAmount\": 50,\n  \"maxDiscountAmount\": 100,\n  \"usageLimit\": 100,\n  \"usageLimitPerUser\": 1,\n  \"validFrom\": \"2024-01-01T00:00:00.000Z\",\n  \"validTo\": \"2024-12-31T23:59:59.000Z\",\n  \"isActive\": true,\n  \"applicableCategories\": [\"{{categoryId}}\"],\n  \"isFirstTimeUserOnly\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/coupons",
+              "host": ["{{baseUrl}}"],
+              "path": ["coupons"]
+            },
+            "description": "Create a new coupon\\n\\n**🔐 Authorization Required:**\\n- **Super Admin**: Universal access\\n- **Regular Admin**: Requires 'admin' role + 'manage:coupons' permission"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Coupons",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/coupons",
+              "host": ["{{baseUrl}}"],
+              "path": ["coupons"]
+            },
+            "description": "Get all coupons"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Active Coupons",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/coupons/active?country=US",
+              "host": ["{{baseUrl}}"],
+              "path": ["coupons", "active"],
+              "query": [
+                {
+                  "key": "country",
+                  "value": "US"
+                }
+              ]
+            },
+            "description": "Get active coupons for specific country"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Coupon by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/coupons/{{couponId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["coupons", "{{couponId}}"]
+            },
+            "description": "Get coupon by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Coupon",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated: Get 20% off your order\",\n  \"value\": 25,\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/coupons/{{couponId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["coupons", "{{couponId}}"]
+            },
+            "description": "Update coupon by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Coupon",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/coupons/{{couponId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["coupons", "{{couponId}}"]
+            },
+            "description": "Delete coupon by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Validate Coupon",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"SAVE20\",\n  \"cartItems\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"categoryId\": \"{{categoryId}}\",\n      \"quantity\": 2,\n      \"price\": 50.00\n    }\n  ],\n  \"userId\": \"{{userId}}\",\n  \"country\": \"US\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/coupons/validate",
+              "host": ["{{baseUrl}}"],
+              "path": ["coupons", "validate"]
+            },
+            "description": "Validate coupon for cart"
+          },
+          "response": []
+        },
+        {
+          "name": "Apply Coupon",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"SAVE20\",\n  \"cartItems\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"categoryId\": \"{{categoryId}}\",\n      \"quantity\": 2,\n      \"price\": 50.00\n    }\n  ],\n  \"userId\": \"{{userId}}\",\n  \"country\": \"US\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/coupons/apply",
+              "host": ["{{baseUrl}}"],
+              "path": ["coupons", "apply"]
+            },
+            "description": "Apply coupon to cart"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Coupon Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/coupons/analytics",
+              "host": ["{{baseUrl}}"],
+              "path": ["coupons", "analytics"]
+            },
+            "description": "Get coupon analytics and statistics"
+          },
+          "response": []
+        }
+      ],
+      "description": "Coupon management and validation endpoints"
+    },
+    {
+      "name": "Abandoned Cart",
+      "item": [
+        {
+          "name": "Create Abandoned Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"items\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"quantity\": 2,\n      \"price\": 50.00\n    }\n  ],\n  \"totalAmount\": 100.00,\n  \"currency\": \"USD\",\n  \"sessionId\": \"session_123\",\n  \"userAgent\": \"Mozilla/5.0...\",\n  \"ipAddress\": \"192.168.1.1\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/abandoned-carts",
+              "host": ["{{baseUrl}}"],
+              "path": ["abandoned-carts"]
+            },
+            "description": "Create abandoned cart record"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Abandoned Carts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/abandoned-carts",
+              "host": ["{{baseUrl}}"],
+              "path": ["abandoned-carts"]
+            },
+            "description": "Get all abandoned carts"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Abandoned Cart by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/abandoned-carts/{{abandonedCartId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["abandoned-carts", "{{abandonedCartId}}"]
+            },
+            "description": "Get abandoned cart by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Abandoned Cart",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"quantity\": 3,\n      \"price\": 50.00\n    }\n  ],\n  \"totalAmount\": 150.00\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/abandoned-carts/{{abandonedCartId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["abandoned-carts", "{{abandonedCartId}}"]
+            },
+            "description": "Update abandoned cart"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Abandoned Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/abandoned-carts/{{abandonedCartId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["abandoned-carts", "{{abandonedCartId}}"]
+            },
+            "description": "Delete abandoned cart"
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Cart as Recovered",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": \"{{orderId}}\",\n  \"recoveredAmount\": 100.00\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/abandoned-carts/{{abandonedCartId}}/recover",
+              "host": ["{{baseUrl}}"],
+              "path": ["abandoned-carts", "{{abandonedCartId}}", "recover"]
+            },
+            "description": "Mark abandoned cart as recovered"
+          },
+          "response": []
+        },
+        {
+          "name": "Send Reminder",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"emailType\": \"reminder\",\n  \"customMessage\": \"Don't forget about your items!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/abandoned-carts/{{abandonedCartId}}/send-reminder",
+              "host": ["{{baseUrl}}"],
+              "path": ["abandoned-carts", "{{abandonedCartId}}", "send-reminder"]
+            },
+            "description": "Send reminder for abandoned cart"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Carts by User ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/abandoned-carts/user/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["abandoned-carts", "user", "{{userId}}"]
+            },
+            "description": "Get abandoned carts for a specific user"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Carts for Reminder",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/abandoned-carts/reminders?hoursAgo=24",
+              "host": ["{{baseUrl}}"],
+              "path": ["abandoned-carts", "reminders"],
+              "query": [
+                {
+                  "key": "hoursAgo",
+                  "value": "24"
+                }
+              ]
+            },
+            "description": "Get abandoned carts that need reminders"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/abandoned-carts/analytics",
+              "host": ["{{baseUrl}}"],
+              "path": ["abandoned-carts", "analytics"]
+            },
+            "description": "Get abandoned cart analytics"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Recovery Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/abandoned-carts/recovery-stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["abandoned-carts", "recovery-stats"]
+            },
+            "description": "Get cart recovery statistics"
+          },
+          "response": []
+        }
+      ],
+      "description": "Abandoned cart tracking and recovery endpoints"
+    },
+    {
+      "name": "Banners",
+      "item": [
+        {
+          "name": "Create Banner",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Summer Sale Banner\",\n  \"description\": \"Get up to 50% off on summer collection\",\n  \"imageUrl\": \"https://example.com/banner.jpg\",\n  \"linkUrl\": \"https://example.com/summer-sale\",\n  \"placement\": \"homepage_hero\",\n  \"type\": \"promotional\",\n  \"isActive\": true,\n  \"startDate\": \"2024-06-01T00:00:00.000Z\",\n  \"endDate\": \"2024-08-31T23:59:59.000Z\",\n  \"sortOrder\": 1,\n  \"targetCountries\": [\"US\", \"CA\"],\n  \"customCss\": \"background-color: #ff6b6b;\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/banners",
+              "host": ["{{baseUrl}}"],
+              "path": ["banners"]
+            },
+            "description": "Create a new banner\\n\\n**🔐 Authorization Required:**\\n- **Super Admin**: Universal access\\n- **Regular Admin**: Requires 'admin' role + 'manage:banners' permission"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Banners",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/banners",
+              "host": ["{{baseUrl}}"],
+              "path": ["banners"]
+            },
+            "description": "Get all banners"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Active Banners",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/banners/active?placement=homepage_hero&country=US",
+              "host": ["{{baseUrl}}"],
+              "path": ["banners", "active"],
+              "query": [
+                {
+                  "key": "placement",
+                  "value": "homepage_hero"
+                },
+                {
+                  "key": "country",
+                  "value": "US"
+                }
+              ]
+            },
+            "description": "Get active banners for specific placement and country"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Banner by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/banners/{{bannerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["banners", "{{bannerId}}"]
+            },
+            "description": "Get banner by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Banner",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Summer Sale Banner\",\n  \"description\": \"Get up to 60% off on summer collection\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/banners/{{bannerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["banners", "{{bannerId}}"]
+            },
+            "description": "Update banner by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Banner",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/banners/{{bannerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["banners", "{{bannerId}}"]
+            },
+            "description": "Delete banner by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Increment Banner View",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/banners/{{bannerId}}/view",
+              "host": ["{{baseUrl}}"],
+              "path": ["banners", "{{bannerId}}", "view"]
+            },
+            "description": "Increment banner view count"
+          },
+          "response": []
+        },
+        {
+          "name": "Increment Banner Click",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/banners/{{bannerId}}/click",
+              "host": ["{{baseUrl}}"],
+              "path": ["banners", "{{bannerId}}", "click"]
+            },
+            "description": "Increment banner click count"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Banner Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/banners/analytics",
+              "host": ["{{baseUrl}}"],
+              "path": ["banners", "analytics"]
+            },
+            "description": "Get banner analytics and performance metrics"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Banner Sort Order",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bannerIds\": [\"{{bannerId}}\", \"banner2_id\", \"banner3_id\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/banners/sort-order",
+              "host": ["{{baseUrl}}"],
+              "path": ["banners", "sort-order"]
+            },
+            "description": "Update banner sort order"
+          },
+          "response": []
+        }
+      ],
+      "description": "Banner management and tracking endpoints"
+    },
+    {
+      "name": "Promos",
+      "item": [
+        {
+          "name": "Create Promo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Buy 2 Get 1 Free\",\n  \"description\": \"Buy any 2 items and get 1 free\",\n  \"type\": \"buy_x_get_y\",\n  \"startDate\": \"2024-01-01T00:00:00.000Z\",\n  \"endDate\": \"2024-12-31T23:59:59.000Z\",\n  \"isActive\": true,\n  \"priority\": 1,\n  \"usageLimit\": 1000,\n  \"minOrderAmount\": 50,\n  \"maxDiscountAmount\": 100,\n  \"isStackable\": false,\n  \"applicableCategories\": [\"{{categoryId}}\"],\n  \"targetCountries\": [\"US\", \"CA\"],\n  \"rules\": {\n    \"buyQuantity\": 2,\n    \"getQuantity\": 1,\n    \"applicableProducts\": [\"{{productId}}\"]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/promos",
+              "host": ["{{baseUrl}}"],
+              "path": ["promos"]
+            },
+            "description": "Create a new promo"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Promos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/promos",
+              "host": ["{{baseUrl}}"],
+              "path": ["promos"]
+            },
+            "description": "Get all promos"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Active Promos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/promos/active?country=US",
+              "host": ["{{baseUrl}}"],
+              "path": ["promos", "active"],
+              "query": [
+                {
+                  "key": "country",
+                  "value": "US"
+                }
+              ]
+            },
+            "description": "Get active promos for specific country"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Promo by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/promos/{{promoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["promos", "{{promoId}}"]
+            },
+            "description": "Get promo by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Promo",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Buy 2 Get 1 Free\",\n  \"description\": \"Updated promotion description\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/promos/{{promoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["promos", "{{promoId}}"]
+            },
+            "description": "Update promo by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Promo",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/promos/{{promoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["promos", "{{promoId}}"]
+            },
+            "description": "Delete promo by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Apply Promo to Cart",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cartItems\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"categoryId\": \"{{categoryId}}\",\n      \"quantity\": 3,\n      \"price\": 50.00\n    }\n  ],\n  \"country\": \"US\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/promos/apply-to-cart",
+              "host": ["{{baseUrl}}"],
+              "path": ["promos", "apply-to-cart"]
+            },
+            "description": "Apply promos to cart items"
+          },
+          "response": []
+        },
+        {
+          "name": "Increment Promo Usage",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/promos/{{promoId}}/increment",
+              "host": ["{{baseUrl}}"],
+              "path": ["promos", "{{promoId}}", "increment"]
+            },
+            "description": "Increment promo usage count"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Promo Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/promos/analytics",
+              "host": ["{{baseUrl}}"],
+              "path": ["promos", "analytics"]
+            },
+            "description": "Get promo analytics and performance metrics"
+          },
+          "response": []
+        }
+      ],
+      "description": "Promotional offers and discount management endpoints"
+    },
+    {
+      "name": "Ads",
+      "item": [
+        {
+          "name": "Create Ad",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Premium Skincare Ad\",\n  \"description\": \"Discover our premium skincare collection\",\n  \"type\": \"banner\",\n  \"placement\": \"sidebar\",\n  \"imageUrl\": \"https://example.com/ad-image.jpg\",\n  \"clickUrl\": \"https://example.com/skincare\",\n  \"dimensions\": {\"width\": 300, \"height\": 250},\n  \"isActive\": true,\n  \"startDate\": \"2024-01-01T00:00:00.000Z\",\n  \"endDate\": \"2024-12-31T23:59:59.000Z\",\n  \"budget\": 1000.00,\n  \"costPerClick\": 0.50,\n  \"costPerImpression\": 0.10,\n  \"sortOrder\": 1,\n  \"targetCountries\": [\"US\", \"CA\"],\n  \"targetAudience\": [\"premium_users\"],\n  \"dayParting\": 14,\n  \"advertiser\": \"Beauty Brand Inc.\",\n  \"frequency\": 3,\n  \"isClickable\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/ads",
+              "host": ["{{baseUrl}}"],
+              "path": ["ads"]
+            },
+            "description": "Create a new ad"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Ads",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ads",
+              "host": ["{{baseUrl}}"],
+              "path": ["ads"]
+            },
+            "description": "Get all ads"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Active Ads",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ads/active?placement=sidebar&country=US&userType=premium_customers",
+              "host": ["{{baseUrl}}"],
+              "path": ["ads", "active"],
+              "query": [
+                {
+                  "key": "placement",
+                  "value": "sidebar"
+                },
+                {
+                  "key": "country",
+                  "value": "US"
+                },
+                {
+                  "key": "userType",
+                  "value": "premium_customers"
+                }
+              ]
+            },
+            "description": "Get active ads for specific placement, country, and user type"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Ad by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ads/{{adId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["ads", "{{adId}}"]
+            },
+            "description": "Get ad by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Ad",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Premium Skincare Ad\",\n  \"description\": \"Updated ad description\",\n  \"budget\": 1500.00,\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/ads/{{adId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["ads", "{{adId}}"]
+            },
+            "description": "Update ad by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Ad",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ads/{{adId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["ads", "{{adId}}"]
+            },
+            "description": "Delete ad by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Record Ad Impression",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ads/{{adId}}/impression",
+              "host": ["{{baseUrl}}"],
+              "path": ["ads", "{{adId}}", "impression"]
+            },
+            "description": "Record ad impression"
+          },
+          "response": []
+        },
+        {
+          "name": "Record Ad Click",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ads/{{adId}}/click",
+              "host": ["{{baseUrl}}"],
+              "path": ["ads", "{{adId}}", "click"]
+            },
+            "description": "Record ad click"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Ad Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ads/analytics",
+              "host": ["{{baseUrl}}"],
+              "path": ["ads", "analytics"]
+            },
+            "description": "Get comprehensive ad analytics"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Ad Sort Order",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"adIds\": [\"{{adId}}\", \"ad2_id\", \"ad3_id\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/ads/sort-order",
+              "host": ["{{baseUrl}}"],
+              "path": ["ads", "sort-order"]
+            },
+            "description": "Update ad sort order"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Ads by Placement",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ads/placement/sidebar?limit=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["ads", "placement", "sidebar"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            },
+            "description": "Get ads by placement with limit"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Budget Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ads/budget-status",
+              "host": ["{{baseUrl}}"],
+              "path": ["ads", "budget-status"]
+            },
+            "description": "Get budget status for all ads"
+          },
+          "response": []
+        }
+      ],
+      "description": "Advertisement management and tracking endpoints"
+    },
+    {
+      "name": "SMS Templates",
+      "item": [
+        {
+          "name": "Create SMS Template",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Order Confirmation\",\n  \"type\": \"order_confirmation\",\n  \"content\": \"Hi {{customerName}}, your order #{{orderNumber}} has been confirmed. Total: ${{totalAmount}}. Thank you!\",\n  \"isActive\": true,\n  \"category\": \"transactional\",\n  \"language\": \"en\",\n  \"targetCountries\": [\"US\", \"CA\"],\n  \"variables\": [\"customerName\", \"orderNumber\", \"totalAmount\"],\n  \"characterCount\": 85,\n  \"estimatedCost\": 0.05\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sms-templates",
+              "host": ["{{baseUrl}}"],
+              "path": ["sms-templates"]
+            },
+            "description": "Create a new SMS template"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All SMS Templates",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sms-templates",
+              "host": ["{{baseUrl}}"],
+              "path": ["sms-templates"]
+            },
+            "description": "Get all SMS templates"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Active SMS Templates",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sms-templates/active?type=order_confirmation&country=US",
+              "host": ["{{baseUrl}}"],
+              "path": ["sms-templates", "active"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "order_confirmation"
+                },
+                {
+                  "key": "country",
+                  "value": "US"
+                }
+              ]
+            },
+            "description": "Get active SMS templates by type and country"
+          },
+          "response": []
+        },
+        {
+          "name": "Get SMS Template by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sms-templates/{{smsTemplateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["sms-templates", "{{smsTemplateId}}"]
+            },
+            "description": "Get SMS template by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update SMS Template",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Order Confirmation\",\n  \"content\": \"Hello {{customerName}}, your order #{{orderNumber}} is confirmed. Total: ${{totalAmount}}. Thanks for shopping with us!\",\n  \"isActive\": true,\n  \"characterCount\": 95\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sms-templates/{{smsTemplateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["sms-templates", "{{smsTemplateId}}"]
+            },
+            "description": "Update SMS template by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete SMS Template",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sms-templates/{{smsTemplateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["sms-templates", "{{smsTemplateId}}"]
+            },
+            "description": "Delete SMS template by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Send SMS",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"templateId\": \"{{smsTemplateId}}\",\n  \"phoneNumber\": \"+1234567890\",\n  \"variables\": {\n    \"customerName\": \"John Doe\",\n    \"orderNumber\": \"ORD-12345\",\n    \"totalAmount\": \"99.99\"\n  },\n  \"country\": \"US\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sms-templates/send",
+              "host": ["{{baseUrl}}"],
+              "path": ["sms-templates", "send"]
+            },
+            "description": "Send SMS using template"
+          },
+          "response": []
+        },
+        {
+          "name": "Preview SMS",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"templateId\": \"{{smsTemplateId}}\",\n  \"variables\": {\n    \"customerName\": \"John Doe\",\n    \"orderNumber\": \"ORD-12345\",\n    \"totalAmount\": \"99.99\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sms-templates/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["sms-templates", "preview"]
+            },
+            "description": "Preview SMS with variables substituted"
+          },
+          "response": []
+        },
+        {
+          "name": "Get SMS Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sms-templates/analytics",
+              "host": ["{{baseUrl}}"],
+              "path": ["sms-templates", "analytics"]
+            },
+            "description": "Get SMS analytics and statistics"
+          },
+          "response": []
+        },
+        {
+          "name": "Increment SMS Usage",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sms-templates/{{smsTemplateId}}/increment",
+              "host": ["{{baseUrl}}"],
+              "path": ["sms-templates", "{{smsTemplateId}}", "increment"]
+            },
+            "description": "Increment SMS template usage count"
+          },
+          "response": []
+        }
+      ],
+      "description": "SMS template management and messaging endpoints"
+    },
+    {
+      "name": "OTP",
+      "item": [
+        {
+          "name": "Generate OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phoneNumber\": \"+1234567890\",\n  \"type\": \"phone_verification\",\n  \"userId\": \"{{userId}}\",\n  \"sessionId\": \"session_123\",\n  \"expiryMinutes\": 5,\n  \"codeLength\": 6,\n  \"maxAttempts\": 3,\n  \"metadata\": {\n    \"purpose\": \"user_registration\",\n    \"source\": \"mobile_app\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/otp/generate",
+              "host": ["{{baseUrl}}"],
+              "path": ["otp", "generate"]
+            },
+            "description": "Generate OTP for phone or email verification"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Email OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"type\": \"email_verification\",\n  \"userId\": \"{{userId}}\",\n  \"sessionId\": \"session_123\",\n  \"expiryMinutes\": 10,\n  \"codeLength\": 6,\n  \"maxAttempts\": 3,\n  \"metadata\": {\n    \"purpose\": \"email_verification\",\n    \"source\": \"web_app\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/otp/generate",
+              "host": ["{{baseUrl}}"],
+              "path": ["otp", "generate"]
+            },
+            "description": "Generate OTP for email verification"
+          },
+          "response": []
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"123456\",\n  \"phoneNumber\": \"+1234567890\",\n  \"userId\": \"{{userId}}\",\n  \"sessionId\": \"session_123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/otp/verify",
+              "host": ["{{baseUrl}}"],
+              "path": ["otp", "verify"]
+            },
+            "description": "Verify OTP code"
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Email OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"123456\",\n  \"email\": \"user@example.com\",\n  \"userId\": \"{{userId}}\",\n  \"sessionId\": \"session_123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/otp/verify",
+              "host": ["{{baseUrl}}"],
+              "path": ["otp", "verify"]
+            },
+            "description": "Verify email OTP code"
+          },
+          "response": []
+        },
+        {
+          "name": "Resend OTP",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/otp/resend?phoneNumber=+1234567890&userId={{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["otp", "resend"],
+              "query": [
+                {
+                  "key": "phoneNumber",
+                  "value": "+1234567890"
+                },
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                }
+              ]
+            },
+            "description": "Resend OTP to phone number"
+          },
+          "response": []
+        },
+        {
+          "name": "Resend Email OTP",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/otp/resend?email=user@example.com&userId={{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["otp", "resend"],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "user@example.com"
+                },
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                }
+              ]
+            },
+            "description": "Resend OTP to email"
+          },
+          "response": []
+        },
+        {
+          "name": "Get OTP Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/otp/analytics",
+              "host": ["{{baseUrl}}"],
+              "path": ["otp", "analytics"]
+            },
+            "description": "Get OTP analytics and statistics (Admin only)"
+          },
+          "response": []
+        }
+      ],
+      "description": "OTP generation and verification endpoints with default mock support"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Set default headers for all requests",
+          "pm.request.headers.add({",
+          "  key: 'Accept',",
+          "  value: 'application/json'",
+          "});",
+          "",
+          "// Add Content-Type for requests with body",
+          "if (pm.request.body && pm.request.body.mode === 'raw') {",
+          "  pm.request.headers.add({",
+          "    key: 'Content-Type',",
+          "    value: 'application/json'",
+          "  });",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global test script to handle common response validation",
+          "pm.test('Response time is less than 5000ms', function () {",
+          "  pm.expect(pm.response.responseTime).to.be.below(5000);",
+          "});",
+          "",
+          "pm.test('Response should be valid JSON', function () {",
+          "  pm.response.to.be.json;",
+          "});",
+          "",
+          "// Set common variables from successful responses",
+          "if (pm.response.code === 200 || pm.response.code === 201) {",
+          "  try {",
+          "    const response = pm.response.json();",
+          "    ",
+          "    // Auto-set productId from product creation/retrieval",
+          "    if (response.data && response.data.id && pm.request.url.path.includes('products')) {",
+          "      pm.collectionVariables.set('productId', response.data.id);",
+          "    }",
+          "    ",
+          "    // Auto-set categoryId from category creation/retrieval",
+          "    if (response.data && response.data.id && pm.request.url.path.includes('categories')) {",
+          "      pm.collectionVariables.set('categoryId', response.data.id);",
+          "    }",
+          "    ",
+          "    // Auto-set orderId from order creation/retrieval",
+          "    if (response.data && response.data.id && pm.request.url.path.includes('orders')) {",
+          "      pm.collectionVariables.set('orderId', response.data.id);",
+          "    }",
+          "    ",
+          "    // Auto-set reviewId from review creation/retrieval",
+          "    if (response.data && response.data.id && pm.request.url.path.includes('reviews')) {",
+          "      pm.collectionVariables.set('reviewId', response.data.id);",
+          "    }",
+          "    ",
+          "    // Auto-set userId from auth responses",
+          "    if (response.data && response.data.user && response.data.user.id) {",
+          "      pm.collectionVariables.set('userId', response.data.user.id);",
+          "    }",
+          "    ",
+          "    // Auto-set authToken from login/registration",
+          "    if (response.data && response.data.accessToken) {",
+          "      pm.collectionVariables.set('userToken', response.data.accessToken);",
+          "    }",
+          "    ",
+          "    // Auto-set taxationId from taxation creation/retrieval",
+          "    if (response.data && response.data.id && pm.request.url.path.includes('taxation')) {",
+          "      pm.collectionVariables.set('taxationId', response.data.id);",
+          "    }",
+          "    ",
+          "    // Auto-set couponId from coupon creation/retrieval",
+          "    if (response.data && response.data.id && pm.request.url.path.includes('coupons')) {",
+          "      pm.collectionVariables.set('couponId', response.data.id);",
+          "    }",
+          "    ",
+          "    // Auto-set abandonedCartId from abandoned cart creation/retrieval",
+          "    if (response.data && response.data.id && pm.request.url.path.includes('abandoned-carts')) {",
+          "      pm.collectionVariables.set('abandonedCartId', response.data.id);",
+          "    }",
+          "    ",
+          "    // Auto-set bannerId from banner creation/retrieval",
+          "    if (response.data && response.data.id && pm.request.url.path.includes('banners')) {",
+          "      pm.collectionVariables.set('bannerId', response.data.id);",
+          "    }",
+          "    ",
+          "    // Auto-set promoId from promo creation/retrieval",
+          "    if (response.data && response.data.id && pm.request.url.path.includes('promos')) {",
+          "      pm.collectionVariables.set('promoId', response.data.id);",
+          "    }",
+          "    ",
+          "    // Auto-set adId from ad creation/retrieval",
+          "    if (response.data && response.data.id && pm.request.url.path.includes('ads')) {",
+          "      pm.collectionVariables.set('adId', response.data.id);",
+          "    }",
+          "    ",
+          "    // Auto-set smsTemplateId from SMS template creation/retrieval",
+          "    if (response.data && response.data.id && pm.request.url.path.includes('sms-templates')) {",
+          "      pm.collectionVariables.set('smsTemplateId', response.data.id);",
+          "    }",
+          "    ",
+          "    // Auto-set otpId from OTP generation/retrieval",
+          "    if (response.success && response.otpId && pm.request.url.path.includes('otp')) {",
+          "      pm.collectionVariables.set('otpId', response.otpId);",
+          "    }",
+          "  } catch (e) {",
+          "    // Silent fail if response is not JSON",
+          "  }",
+          "}"
+        ]
+      }
+    }
+  ]
+}
