@@ -1,10 +1,10 @@
-# cosmetic_ecommerce_app
+# Cosmetic Ecommerce App
 
-A new Flutter project.
+A Flutter-based cosmetic ecommerce application with admin and customer interfaces.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This project is a Flutter application built with GetX state management and clean architecture principles.
 
 A few resources to get you started if this is your first Flutter project:
 
